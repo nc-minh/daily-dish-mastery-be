@@ -1,0 +1,71 @@
+{
+  "name": "daily-dish-mastery-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/server",
+  "engines": {
+    "node": "20.x",
+    "npm": "10.x"
+  },
+  "scripts": {
+    "prepare": "npx husky install",
+    "lint": "./node_modules/.bin/eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint-fix": "./node_modules/.bin/eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "prettier": "prettier --write ./src/**/*.{js,ts,tsx,scss}",
+    "prettier:check": "prettier --list-different ./src/**/*.{js,ts,tsx,scss}",
+    "build": "rm -rf ./dist && ./node_modules/.bin/tsc",
+    "start": "cross-env NODE_PATH=./dist NODE_ENV=production node dist/server.js",
+    "dev": "cross-env NODE_PATH=./src NODE_ENV=dev nodemon src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nc-minh/daily-dish-mastery-be"
+  },
+  "author": "nc-minh",
+  "license": "ISC",
+  "dependencies": {
+    "@types/compression": "^1.7.5",
+    "class-validator": "^0.14.0",
+    "compression": "^1.7.4",
+    "dotenv": "16.3.1",
+    "dotenv-safe": "8.2.0",
+    "express": "4.18.2",
+    "helmet": "7.1.0",
+    "nocache": "4.0.0",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "18.4.3",
+    "@commitlint/config-conventional": "18.4.3",
+    "@types/dotenv-safe": "8.1.5",
+    "@types/express": "4.17.21",
+    "@typescript-eslint/eslint-plugin": "6.16.0",
+    "@typescript-eslint/parser": "6.16.0",
+    "cross-env": "7.0.3",
+    "eslint": "8.56.0",
+    "eslint-config-airbnb-typescript": "17.1.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.1.2",
+    "lint-staged": "15.2.0",
+    "nodemon": "3.0.2",
+    "prettier": "3.1.1",
+    "ts-node": "10.9.2",
+    "typescript": "5.3.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./src/*.{js,jsx,ts,tsx}": [
+      "npm run lint",
+      "npm run lint-fix",
+      "npm run prettier",
+      "git add ."
+    ],
+    "*.{md,json}": [
+      "prettier --write"
+    ]
+  }
+}
