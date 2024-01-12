@@ -9,6 +9,7 @@ import { APP_CONSTANTS } from 'constants/app';
 import AppRequest from 'types/rest/AppRequest';
 import URLParams from 'types/rest/URLParams';
 import { errorMiddleware } from 'middleware/errorMiddleware';
+import initializeResources from 'resources';
 
 const app = express();
 
@@ -60,6 +61,7 @@ app.use(APP_CONSTANTS.apiPrefix, routers);
 initializeErrorHandler();
 
 export const listen = async () => {
+  await initializeResources();
   app.listen(config.port, () => console.log(`🚀 Server running on port http://localhost:${config.port}`));
 };
 
