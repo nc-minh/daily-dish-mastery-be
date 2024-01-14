@@ -13,6 +13,8 @@ import initializeResources from 'resources';
 
 const app = express();
 
+app.use('/public', express.static('public'));
+
 /**
  * Initializes the security middleware for the application.
  * This function adds various security middleware to enhance the security of the application.

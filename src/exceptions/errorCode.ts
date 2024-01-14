@@ -29,10 +29,21 @@ export const USER_ERROR_CODES = {
   },
 };
 
+export const UPLOAD_ERROR_CODES = {
+  UPLOAD_EXCEPTION: {
+    CODE: 'UPLOAD_EXCEPTION',
+    MESSAGE: 'The user requested an invalid action due to missing or incorrect file',
+  },
+};
+
 export const AUTH_ERROR_CODES = {
-  UNAUTHORIZED: {
-    CODE: 'AUTHENTICATION_ERROR',
+  LOGIN_EXCEPTION: {
+    CODE: 'LOGIN_EXCEPTION',
     MESSAGE: 'The user provided an incorrect password',
+  },
+  UNAUTHORIZED_MIDDLEWARE: {
+    CODE: 'UNAUTHORIZED_MIDDLEWARE',
+    MESSAGE: 'Unauthorized users',
   },
   JWT_EXCEPTION: {
     CODE: 'JWT_EXCEPTION',
@@ -45,6 +56,14 @@ export const AUTH_ERROR_CODES = {
   JWT_ACCESS_TOKEN_EXPIRED: {
     CODE: 'JWT_ACCESS_TOKEN_EXPIRED',
     MESSAGE: 'Access token expired',
+  },
+  BEARER_EXCEPTION: {
+    CODE: 'BEARER_EXCEPTION',
+    MESSAGE: 'Bearer is missing or malformed',
+  },
+  AUTHORIZATION_MIDDLEWARE: {
+    CODE: 'AUTHORIZATION_MIDDLEWARE',
+    MESSAGE: 'The client does not have access rights to the content',
   },
 };
 

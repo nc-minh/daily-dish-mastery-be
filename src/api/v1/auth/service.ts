@@ -2,7 +2,7 @@ import UserModel from 'models/schemas/User';
 import { ERROR_CODES } from 'exceptions/errorCode';
 import { LoginRequest } from './dto/LoginRequest';
 import verifyHashPassword from 'utils/bcrypt/verifyHashPassword';
-import UnauthorizedException from 'exceptions/UnauthorizedException';
+import LoginException from 'exceptions/LoginException';
 import UserNotFoundException from 'exceptions/UserNotFoundException';
 import hideHashPassword from 'utils/user/hideHashPassword';
 import DuplicateUserException from 'exceptions/DuplicateUserException';
@@ -27,7 +27,7 @@ export const login = async (input: LoginRequest) => {
     const isOk = await verifyHashPassword(input.password, user.password);
 
     if (!isOk) {
-      return new UnauthorizedException();
+      return new LoginException();
     }
 
     const jwtPayload: JWTPayload = {

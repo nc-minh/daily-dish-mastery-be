@@ -11,6 +11,7 @@ const verifyAccessToken = (token: string): JWTPayload => {
     return JWT.verify(token, secret) as JWTPayload;
   } catch (error) {
     logger.error(`Error while verifying access token: ${error}`);
+    throw error;
   }
 };
 
