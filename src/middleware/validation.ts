@@ -6,6 +6,7 @@ import * as express from 'express';
 import HttpException from 'exceptions/HttpException';
 import { APP_CONSTANTS } from 'constants/app';
 import { ErrorCodes } from 'exceptions/errorCode';
+import logger from 'utils/logger/logger';
 
 /**
  * Method to get request validator type based on the parameter.
@@ -33,22 +34,26 @@ function getRequestValidator(parameter: string, request: ExpressRequest) {
  */
 function validationMiddleware(type: any, parameter: string, skipMissingProperties = true): express.RequestHandler {
   return (req, res, next) => {
-    const requestValidator = getRequestValidator(parameter, req);
-    const requestBody = plainToInstance(type, requestValidator);
-    validate(requestBody, { skipMissingProperties, forbidUnknownValues: true, whitelist: true }).then(
-      (errors: ValidationError[]) => {
-        if (errors.length > 0) {
-          const errorDetail = ErrorCodes.VALIDATION_ERROR;
-          next(new HttpException(400, errorDetail.MESSAGE, errorDetail.CODE, errors));
-        } else {
-          // whitelist only in body of the request
-          if (APP_CONSTANTS.body === parameter) {
-            req.body = requestBody;
+    try {
+      const requestValidator = getRequestValidator(parameter, req);
+      const requestBody = plainToInstance(type, requestValidator);
+      validate(requestBody, { skipMissingProperties, forbidUnknownValues: true, whitelist: true }).then(
+        (errors: ValidationError[]) => {
+          if (errors.length > 0) {
+            const errorDetail = ErrorCodes.VALIDATION_ERROR;
+            next(new HttpException(400, errorDetail.MESSAGE, errorDetail.CODE, errors));
+          } else {
+            // whitelist only in body of the request
+            if (APP_CONSTANTS.body === parameter) {
+              req.body = requestBody;
+            }
+            next();
           }
-          next();
-        }
-      },
-    );
+        },
+      );
+    } catch (error) {
+      logger.error(`validationMiddleware: ${error}`);
+    }
   };
 }
 

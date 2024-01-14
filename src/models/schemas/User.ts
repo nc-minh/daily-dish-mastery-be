@@ -1,4 +1,5 @@
 import { Model, model, Schema } from 'mongoose';
+import bcypt from 'bcrypt';
 
 import User from 'models/types/User';
 import Role from 'types/user/Role';
@@ -18,6 +19,17 @@ const UserSchema = new Schema<User>(
 );
 
 UserSchema.index({ role: 1 });
+
+UserSchema.pre('save', async function (this: User, next: (err?: Error | undefined) => void) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  const salt = await bcypt.genSalt(10);
+  const hashPassword = await bcypt.hash(this.password, salt);
+  this.password = hashPassword;
+  next();
+});
 
 const UserModel: Model<User> = model<User>(MODELS.user, UserSchema, MODELS.user);
 export default UserModel;

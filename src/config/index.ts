@@ -17,4 +17,10 @@ export default {
     replicaSet: process.env.MONGODB_REPLICA_SET,
     dbName: process.env.MONGODB_NAME,
   },
+  jwt: {
+    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || '',
+    refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || '',
+    accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '1h',
+    refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '45d',
+  },
 };
