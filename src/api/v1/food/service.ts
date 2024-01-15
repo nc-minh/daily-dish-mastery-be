@@ -53,7 +53,9 @@ export const getAllFoods = async (urlParams: URLParams) => {
     const sortObj: any = { [sort]: order === 'DESC' ? -1 : 1 };
     const q = urlParams.q || '';
 
-    let query = {};
+    let query = {
+      is_approved: true,
+    } as any;
 
     if (q) {
       // Only perform the search if the search term is not empty
@@ -85,7 +87,9 @@ export const getAllFoods = async (urlParams: URLParams) => {
 
 export const getFoodById = async (foodId: string) => {
   try {
-    const food = FoodModel.findById({ _id: foodId }).populate('created_by', populateUser()).populate('category_id');
+    const food = FoodModel.findOne({ _id: foodId, is_approved: true })
+      .populate('created_by', populateUser())
+      .populate('category_id');
 
     return await food;
   } catch (error) {
