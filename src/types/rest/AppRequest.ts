@@ -10,4 +10,7 @@ export default interface AppRequest extends ExpressRequest {
   startTime?: number;
   searchParams?: URLParams;
   appName: string;
+  params: {
+    id: string;
+  };
 }

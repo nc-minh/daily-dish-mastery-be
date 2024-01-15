@@ -6,3 +6,8 @@ export const APP_CONSTANTS = {
   body: 'body',
   file: 'file',
 };
+
+export const DEFAULT_PAGING = {
+  limit: 10,
+  skip: 0,
+};

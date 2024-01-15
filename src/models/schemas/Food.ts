@@ -22,7 +22,7 @@ const FoodSchema = new Schema<Food>(
   },
 );
 
-FoodSchema.index({ name: 1 });
+FoodSchema.index({ name: 'text' });
 FoodSchema.index({ created_by: 1 });
 FoodSchema.index({ view_count: 1 });
 
