@@ -7,6 +7,7 @@ import { DEFAULT_PAGING } from 'constants/app';
 import { SortOrder } from 'constants/urlparams';
 import URLParams from 'types/rest/URLParams';
 import populateUser from 'utils/user/populateUser';
+import { GetFoodQuery } from './dto/GetFoodQuery';
 
 export const createFood = async (input: CreateFoodRequest, author: ObjectId) => {
   try {
@@ -44,7 +45,7 @@ export const deleteFoodById = async (foodId: string) => {
   }
 };
 
-export const getAllFoods = async (urlParams: URLParams) => {
+export const getAllFoods = async (getAllFoodsQuery: GetFoodQuery, urlParams: URLParams) => {
   try {
     const pageSize = urlParams.pageSize || DEFAULT_PAGING.limit;
     const currentPage = urlParams.currentPage || DEFAULT_PAGING.skip;
@@ -52,6 +53,8 @@ export const getAllFoods = async (urlParams: URLParams) => {
     const sort = urlParams.sort || 'created_at';
     const sortObj: any = { [sort]: order === 'DESC' ? -1 : 1 };
     const q = urlParams.q || '';
+
+    const { category_id } = getAllFoodsQuery;
 
     let query = {
       is_approved: true,
@@ -61,6 +64,8 @@ export const getAllFoods = async (urlParams: URLParams) => {
       // Only perform the search if the search term is not empty
       query = { $text: { $search: q } };
     }
+
+    if (category_id) query.category_id = category_id;
 
     const count = FoodModel.countDocuments(query);
     const data = FoodModel.find(query)

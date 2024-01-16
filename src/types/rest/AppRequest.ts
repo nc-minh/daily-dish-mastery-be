@@ -13,4 +13,7 @@ export default interface AppRequest extends ExpressRequest {
   params: {
     id: string;
   };
+  query: {
+    category_id: string;
+  };
 }

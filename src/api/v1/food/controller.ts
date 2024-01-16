@@ -8,6 +8,7 @@ import { UpdateFoodParams, UpdateFoodRequest } from './dto/UpdateFoodRequest';
 import { DeleteFoodParams } from './dto/DeleteFoodParams';
 import URLParams from 'types/rest/URLParams';
 import { GetFoodParams } from './dto/GetFoodParams';
+import { GetFoodQuery } from './dto/GetFoodQuery';
 
 export const createFood = async (request: AppRequest, response: ExpressResponse) => {
   const input: CreateFoodRequest = request.body;
@@ -54,8 +55,9 @@ export const deleteFoodById = async (request: AppRequest, response: ExpressRespo
 
 export const getAllFoods = async (request: AppRequest, response: ExpressResponse) => {
   const urlParams: URLParams = request.searchParams;
+  const query: GetFoodQuery = request.query;
 
-  const { result, meta } = await service.getAllFoods(urlParams);
+  const { result, meta } = await service.getAllFoods(query, urlParams);
 
   response.send(
     fmt.formatResponse({
