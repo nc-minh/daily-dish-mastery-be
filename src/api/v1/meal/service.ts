@@ -7,6 +7,7 @@ import populateUser from 'utils/user/populateUser';
 import { DEFAULT_PAGING } from 'constants/app';
 import URLParams from 'types/rest/URLParams';
 import { SortOrder } from 'constants/urlparams';
+import AccessDeniedException from 'exceptions/AccessDeniedException';
 
 export const createMeal = async (input: CreateMealRequest, author: ObjectId) => {
   try {
@@ -22,15 +23,19 @@ export const createMeal = async (input: CreateMealRequest, author: ObjectId) => 
 
 export const updateMeal = async (input: UpdateMealRequest, params: UpdateMealParams, author: ObjectId) => {
   try {
-    const food = await MealModel.findByIdAndUpdate(
+    const meal = await MealModel.findById({ _id: params.id });
+
+    if (String(meal?.created_by) !== String(author)) {
+      return new AccessDeniedException();
+    }
+
+    return await MealModel.findByIdAndUpdate(
       { _id: params.id },
       {
         $set: input,
         updated_by: author,
       },
     );
-
-    return food;
   } catch (error) {
     throw new BadRequestException();
   }
@@ -40,11 +45,8 @@ export const deleteMealById = async (foodId: string, author: ObjectId) => {
   try {
     const meal = await MealModel.findById({ _id: foodId });
 
-    console.log('meal.created_by._id', String(meal.created_by));
-    console.log('author', author);
-
-    if (meal.created_by._id !== author) {
-      return null;
+    if (String(meal?.created_by) !== String(author)) {
+      return new AccessDeniedException();
     }
 
     return await MealModel.findOneAndDelete({ _id: foodId });

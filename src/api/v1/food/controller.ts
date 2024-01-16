@@ -42,7 +42,7 @@ export const updateFood = async (request: AppRequest, response: ExpressResponse)
 export const deleteFoodById = async (request: AppRequest, response: ExpressResponse) => {
   const params: DeleteFoodParams = request.params;
 
-  const result = await service.deleteFoodById(params.id);
+  const result = await service.deleteFoodById(params.id, request.user._id);
 
   response.send(
     fmt.formatResponse({

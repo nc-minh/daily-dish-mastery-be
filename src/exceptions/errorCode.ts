@@ -65,6 +65,10 @@ export const AUTH_ERROR_CODES = {
     CODE: 'AUTHORIZATION_MIDDLEWARE',
     MESSAGE: 'The client does not have access rights to the content',
   },
+  ACCESS_DENIED: {
+    CODE: 'ACCESS_DENIED',
+    MESSAGE: 'User does not have permission to access or perform the requested action',
+  },
 };
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status

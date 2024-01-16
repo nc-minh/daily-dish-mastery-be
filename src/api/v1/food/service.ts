@@ -8,6 +8,7 @@ import { SortOrder } from 'constants/urlparams';
 import URLParams from 'types/rest/URLParams';
 import populateUser from 'utils/user/populateUser';
 import { GetFoodQuery } from './dto/GetFoodQuery';
+import AccessDeniedException from 'exceptions/AccessDeniedException';
 
 export const createFood = async (input: CreateFoodRequest, author: ObjectId) => {
   try {
@@ -21,25 +22,33 @@ export const createFood = async (input: CreateFoodRequest, author: ObjectId) => 
 
 export const updateFood = async (input: UpdateFoodRequest, params: UpdateFoodParams, author: ObjectId) => {
   try {
-    const food = await FoodModel.findByIdAndUpdate(
+    const res = await FoodModel.findById({ _id: params.id });
+
+    if (String(res?.created_by) !== String(author)) {
+      return new AccessDeniedException();
+    }
+
+    return await FoodModel.findByIdAndUpdate(
       { _id: params.id },
       {
         $set: input,
         updated_by: author,
       },
     );
-
-    return food;
   } catch (error) {
     throw new BadRequestException();
   }
 };
 
-export const deleteFoodById = async (foodId: string) => {
+export const deleteFoodById = async (foodId: string, author: ObjectId) => {
   try {
-    const category = await FoodModel.deleteOne({ _id: foodId });
+    const res = await FoodModel.findById({ _id: foodId });
 
-    return category;
+    if (String(res?.created_by) !== String(author)) {
+      return new AccessDeniedException();
+    }
+
+    return await FoodModel.deleteOne({ _id: foodId });
   } catch (error) {
     throw new BadRequestException();
   }
