@@ -8,6 +8,7 @@ import { DEFAULT_PAGING } from 'constants/app';
 import URLParams from 'types/rest/URLParams';
 import { SortOrder } from 'constants/urlparams';
 import AccessDeniedException from 'exceptions/AccessDeniedException';
+import NotFoundException from 'exceptions/NotFoundException';
 
 export const createMeal = async (input: CreateMealRequest, author: ObjectId) => {
   try {
@@ -15,8 +16,6 @@ export const createMeal = async (input: CreateMealRequest, author: ObjectId) => 
 
     return meal;
   } catch (error) {
-    console.log(error);
-
     throw new BadRequestException();
   }
 };
@@ -24,6 +23,10 @@ export const createMeal = async (input: CreateMealRequest, author: ObjectId) => 
 export const updateMeal = async (input: UpdateMealRequest, params: UpdateMealParams, author: ObjectId) => {
   try {
     const meal = await MealModel.findById({ _id: params.id });
+
+    if (!meal) {
+      return new NotFoundException();
+    }
 
     if (String(meal?.created_by) !== String(author)) {
       return new AccessDeniedException();
@@ -44,6 +47,10 @@ export const updateMeal = async (input: UpdateMealRequest, params: UpdateMealPar
 export const deleteMealById = async (foodId: string, author: ObjectId) => {
   try {
     const meal = await MealModel.findById({ _id: foodId });
+
+    if (!meal) {
+      return new NotFoundException();
+    }
 
     if (String(meal?.created_by) !== String(author)) {
       return new AccessDeniedException();

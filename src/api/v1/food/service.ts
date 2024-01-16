@@ -9,6 +9,7 @@ import URLParams from 'types/rest/URLParams';
 import populateUser from 'utils/user/populateUser';
 import { GetFoodQuery } from './dto/GetFoodQuery';
 import AccessDeniedException from 'exceptions/AccessDeniedException';
+import NotFoundException from 'exceptions/NotFoundException';
 
 export const createFood = async (input: CreateFoodRequest, author: ObjectId) => {
   try {
@@ -23,6 +24,10 @@ export const createFood = async (input: CreateFoodRequest, author: ObjectId) => 
 export const updateFood = async (input: UpdateFoodRequest, params: UpdateFoodParams, author: ObjectId) => {
   try {
     const res = await FoodModel.findById({ _id: params.id });
+
+    if (!res) {
+      return new NotFoundException();
+    }
 
     if (String(res?.created_by) !== String(author)) {
       return new AccessDeniedException();
@@ -43,6 +48,10 @@ export const updateFood = async (input: UpdateFoodRequest, params: UpdateFoodPar
 export const deleteFoodById = async (foodId: string, author: ObjectId) => {
   try {
     const res = await FoodModel.findById({ _id: foodId });
+
+    if (!res) {
+      return new NotFoundException();
+    }
 
     if (String(res?.created_by) !== String(author)) {
       return new AccessDeniedException();
@@ -101,11 +110,13 @@ export const getAllFoods = async (getAllFoodsQuery: GetFoodQuery, urlParams: URL
 
 export const getFoodById = async (foodId: string) => {
   try {
-    const food = FoodModel.findOne({ _id: foodId, is_approved: true })
+    const filter = { _id: foodId, is_approved: true };
+
+    const res = await FoodModel.findByIdAndUpdate(filter, { $inc: { view_count: 1 } })
       .populate('created_by', populateUser())
       .populate('category_id');
 
-    return await food;
+    return res;
   } catch (error) {
     throw new BadRequestException();
   }

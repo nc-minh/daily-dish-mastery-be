@@ -16,6 +16,10 @@ export const ErrorCodes: { [key: string]: CustomError } = {
     CODE: 'VALIDATION_ERROR',
     MESSAGE: 'Validation failed error',
   },
+  NOT_FOUND: {
+    CODE: 'NOT_FOUND',
+    MESSAGE: 'Not found',
+  },
 };
 
 export const USER_ERROR_CODES = {

@@ -6,6 +6,7 @@ import categoryRouter from './category';
 import uploadRouter from './upload';
 import foodRouter from './food';
 import mealRouter from './meal';
+import foodCommentRouter from './food-comment';
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use('/categories', categoryRouter);
 router.use('/upload', uploadRouter);
 router.use('/foods', foodRouter);
 router.use('/meals', mealRouter);
+router.use('/food-comments', foodCommentRouter);
 
 export default router;
