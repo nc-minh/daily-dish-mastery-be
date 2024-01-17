@@ -16,6 +16,12 @@ const FoodSavedSchema = new Schema<FoodSaved>(
 
 FoodSavedSchema.index({ foods_id: 1 });
 FoodSavedSchema.index({ created_by: 1 });
+FoodSavedSchema.index(
+  { foods_id: 1, created_by: 1 },
+  {
+    unique: true,
+  },
+);
 
-const FoodSavedModel: Model<FoodSaved> = model<FoodSaved>(MODELS.food_comment, FoodSavedSchema, MODELS.food_comment);
+const FoodSavedModel: Model<FoodSaved> = model<FoodSaved>(MODELS.food_saved, FoodSavedSchema, MODELS.food_saved);
 export default FoodSavedModel;
