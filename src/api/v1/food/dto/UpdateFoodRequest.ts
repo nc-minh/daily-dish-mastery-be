@@ -1,6 +1,5 @@
-import { IsString, IsOptional, IsObject, IsArray, IsDefined } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsDefined } from 'class-validator';
 import CookingInstructions from 'models/types/CookingInstructions';
-import Ingredient from 'models/types/Ingredient';
 
 export class UpdateFoodRequest {
   @IsString()
@@ -19,9 +18,9 @@ export class UpdateFoodRequest {
   @IsOptional()
   cover_url: string;
 
-  @IsObject()
+  @IsArray()
   @IsOptional()
-  ingredient: Ingredient;
+  ingredient: string[];
 
   @IsArray()
   @IsOptional()

@@ -12,7 +12,7 @@ const FoodSchema = new Schema<Food>(
     cover_url: { type: String, default: '' },
     view_count: { type: Number, default: 0 },
     is_approved: { type: Boolean, default: false },
-    ingredient: { type: Object },
+    ingredient: [{ type: String }],
     cooking_instructions: Array<CookingInstructions>,
     created_by: { type: Schema.Types.ObjectId, ref: MODELS.user, required: true },
     updated_by: { type: Schema.Types.ObjectId, ref: MODELS.user },
