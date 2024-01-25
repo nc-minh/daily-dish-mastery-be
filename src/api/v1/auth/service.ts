@@ -15,20 +15,19 @@ import { RefreshTokenRequest } from './dto/RefreshTokenRequest';
 import verifyRefreshToken from 'utils/jwt/verifyRefreshToken';
 import JWTException from 'exceptions/JWTException';
 import JWTRefreshTokenExpiredException from 'exceptions/JWTRefreshTokenExpiredException';
-import HttpException from 'exceptions/HttpException';
 
 export const login = async (input: LoginRequest) => {
   try {
     const user = await UserModel.findOne({ username: input.username });
 
     if (!user) {
-      throw new UserNotFoundException();
+      return new UserNotFoundException();
     }
 
     const isOk = await verifyHashPassword(input.password, user.password);
 
     if (!isOk) {
-      throw new LoginException();
+      return new LoginException();
     }
 
     const jwtPayload: JWTPayload = {
@@ -45,7 +44,7 @@ export const login = async (input: LoginRequest) => {
       refreshToken,
     };
   } catch (error) {
-    throw new HttpException(error?.status, error?.message, error?.errorCode);
+    throw new BadRequestException();
   }
 };
 
@@ -68,7 +67,7 @@ export const createUser = async (input: CreateUserRequest) => {
     };
   } catch (error) {
     if (error?.code === ERROR_CODES.MONGODB_DUPLICATED_CODE) {
-      throw new DuplicateUserException();
+      return new DuplicateUserException();
     }
 
     throw new BadRequestException();
