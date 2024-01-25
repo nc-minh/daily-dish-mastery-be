@@ -15,19 +15,20 @@ import { RefreshTokenRequest } from './dto/RefreshTokenRequest';
 import verifyRefreshToken from 'utils/jwt/verifyRefreshToken';
 import JWTException from 'exceptions/JWTException';
 import JWTRefreshTokenExpiredException from 'exceptions/JWTRefreshTokenExpiredException';
+import HttpException from 'exceptions/HttpException';
 
 export const login = async (input: LoginRequest) => {
   try {
     const user = await UserModel.findOne({ username: input.username });
 
     if (!user) {
-      return new UserNotFoundException();
+      throw new UserNotFoundException();
     }
 
     const isOk = await verifyHashPassword(input.password, user.password);
 
     if (!isOk) {
-      return new LoginException();
+      throw new LoginException();
     }
 
     const jwtPayload: JWTPayload = {
@@ -44,7 +45,7 @@ export const login = async (input: LoginRequest) => {
       refreshToken,
     };
   } catch (error) {
-    throw new BadRequestException();
+    throw new HttpException(error?.status, error?.message, error?.errorCode);
   }
 };
 
