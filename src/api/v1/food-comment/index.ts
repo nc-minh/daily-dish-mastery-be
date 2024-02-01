@@ -33,6 +33,6 @@ router.delete(
   asyncRouteHandler(controller.deleteFoodCommentById),
 );
 
-router.get('/', authMiddleware, asyncRouteHandler(controller.getAllFoodComments));
+router.get('/', asyncRouteHandler(controller.getAllFoodComments));
 
 export default router;
