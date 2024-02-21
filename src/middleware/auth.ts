@@ -9,8 +9,8 @@ import verifyAccessToken from 'utils/jwt/verifyAccessToken';
 import logger from 'utils/logger/logger';
 import UserModel from 'models/schemas/User';
 import AuthorizationException from 'exceptions/AuthorizationException';
-import JWTRefreshTokenExpiredException from 'exceptions/JWTRefreshTokenExpiredException';
 import JWTException from 'exceptions/JWTException';
+import JWTAccessTokenExpiredException from 'exceptions/JWTAccessTokenExpiredException';
 
 export const authMiddleware = async (req: AppRequest, res: ExpressResponse, next: NextFunction) => {
   try {
@@ -38,7 +38,7 @@ export const authMiddleware = async (req: AppRequest, res: ExpressResponse, next
   } catch (error) {
     logger.error(`Error in authMiddleware: ${error}`);
     if (error.message === 'invalid signature' || error.message === 'jwt malformed') next(new JWTException());
-    if (error.message === 'jwt expired') next(new JWTRefreshTokenExpiredException());
+    if (error.message === 'jwt expired') next(new JWTAccessTokenExpiredException());
     next(new UnauthorizedException());
   }
 };
