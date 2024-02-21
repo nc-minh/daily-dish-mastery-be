@@ -7,5 +7,5 @@ export class GetFoodQuery {
 
   @IsString()
   @IsOptional()
-  user_id: string;
+  is_approved: string;
 }

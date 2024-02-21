@@ -72,7 +72,7 @@ export const getAllFoods = async (getAllFoodsQuery: GetFoodQuery, urlParams: URL
     const sortObj: any = { [sort]: order === 'DESC' ? -1 : 1 };
     const q = urlParams.q || '';
 
-    const { category_id } = getAllFoodsQuery;
+    const { category_id, user_id } = getAllFoodsQuery;
 
     let query = {
       is_approved: true,
@@ -84,6 +84,7 @@ export const getAllFoods = async (getAllFoodsQuery: GetFoodQuery, urlParams: URL
     }
 
     if (category_id) query.category_id = category_id;
+    if (user_id) query.created_by = user_id;
 
     const count = FoodModel.countDocuments(query);
     const data = FoodModel.find(query)

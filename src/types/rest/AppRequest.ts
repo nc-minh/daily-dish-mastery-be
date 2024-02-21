@@ -16,5 +16,7 @@ export default interface AppRequest extends ExpressRequest {
   query: {
     category_id: string;
     foods_id: string;
+    user_id: string;
+    is_approved: string;
   };
 }
