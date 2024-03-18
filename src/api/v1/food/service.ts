@@ -13,6 +13,8 @@ import NotFoundException from 'exceptions/NotFoundException';
 
 export const createFood = async (input: CreateFoodRequest, author: ObjectId) => {
   try {
+    console.log('input', input);
+
     const food = await FoodModel.create({ ...input, created_by: author });
 
     return food;
