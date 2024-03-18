@@ -13,8 +13,6 @@ import NotFoundException from 'exceptions/NotFoundException';
 
 export const createFood = async (input: CreateFoodRequest, author: ObjectId) => {
   try {
-    console.log('input', input);
-
     const food = await FoodModel.create({ ...input, created_by: author });
 
     return food;
@@ -120,6 +118,52 @@ export const getFoodById = async (foodId: string) => {
       .populate('category_id');
 
     return res;
+  } catch (error) {
+    throw new BadRequestException();
+  }
+};
+
+export const getAllFoodsByOwner = async (getAllFoodsQuery: GetFoodQuery, urlParams: URLParams, author: ObjectId) => {
+  try {
+    const pageSize = urlParams.pageSize || DEFAULT_PAGING.limit;
+    const currentPage = urlParams.currentPage || DEFAULT_PAGING.skip;
+    const order = urlParams.order || SortOrder.DESC;
+    const sort = urlParams.sort || 'created_at';
+    const sortObj: any = { [sort]: order === 'DESC' ? -1 : 1 };
+    const q = urlParams.q || '';
+
+    const { category_id, user_id } = getAllFoodsQuery;
+
+    let query = {
+      created_by: author,
+    } as any;
+
+    if (q) {
+      // Only perform the search if the search term is not empty
+      query = { $text: { $search: q } };
+    }
+
+    if (category_id) query.category_id = category_id;
+    if (user_id) query.created_by = user_id;
+
+    const count = FoodModel.countDocuments(query);
+    const data = FoodModel.find(query)
+      .skip(pageSize * currentPage)
+      .limit(pageSize)
+      .sort(sortObj)
+      .populate('created_by', populateUser())
+      .populate('category_id');
+
+    const resolveAll = await Promise.all([count, data]);
+
+    return {
+      result: resolveAll[1],
+      meta: {
+        total: resolveAll[0],
+        pageSize,
+        currentPage,
+      },
+    };
   } catch (error) {
     throw new BadRequestException();
   }

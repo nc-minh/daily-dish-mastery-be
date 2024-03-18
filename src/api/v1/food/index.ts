@@ -37,4 +37,6 @@ router.get('/', asyncRouteHandler(controller.getAllFoods));
 
 router.get('/:id', asyncRouteHandler(controller.getFoodById));
 
+router.get('/owner', authMiddleware, asyncRouteHandler(controller.getAllFoods));
+
 export default router;
