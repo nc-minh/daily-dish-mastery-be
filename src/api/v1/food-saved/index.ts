@@ -6,6 +6,7 @@ import { validationMiddleware } from 'middleware/validation';
 import { APP_CONSTANTS } from 'constants/app';
 import { authMiddleware } from 'middleware/auth';
 import { CreateFoodSavedRequest } from './dto/CreateFoodSavedRequest';
+import { CheckSavedFoodRequest } from './dto/CheckSavedFoodRequest';
 
 const router = Router();
 
@@ -17,5 +18,12 @@ router.post(
 );
 
 router.get('/', authMiddleware, asyncRouteHandler(controller.getAllFoodSaved));
+
+router.post(
+  '/check',
+  validationMiddleware(CheckSavedFoodRequest, APP_CONSTANTS.body),
+  authMiddleware,
+  asyncRouteHandler(controller.checkSavedFood),
+);
 
 export default router;

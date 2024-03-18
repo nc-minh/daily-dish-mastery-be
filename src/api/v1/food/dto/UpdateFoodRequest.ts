@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsArray, IsDefined } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsDefined, IsBoolean } from 'class-validator';
 import CookingInstructions from 'models/types/CookingInstructions';
 
 export class UpdateFoodRequest {
@@ -25,6 +25,10 @@ export class UpdateFoodRequest {
   @IsArray()
   @IsOptional()
   cooking_instructions: CookingInstructions[];
+
+  @IsBoolean()
+  @IsOptional()
+  is_approved: string;
 }
 
 export class UpdateFoodParams {

@@ -2,13 +2,15 @@ import BadRequestException from 'exceptions/BadRequestException';
 import { ObjectId } from 'mongoose';
 
 import FoodSavedModel from 'models/schemas/FoodSaved';
-import { CreateFoodSavedRequest } from './dto/CreateFoodSavedRequest';
+import { CheckSavedFoodRequest } from './dto/CheckSavedFoodRequest';
 import { DEFAULT_PAGING } from 'constants/app';
 import { SortOrder } from 'constants/urlparams';
 import URLParams from 'types/rest/URLParams';
 import populateUser from 'utils/user/populateUser';
 import FoodModel from 'models/schemas/Food';
 import NotFoundException from 'exceptions/NotFoundException';
+import { CreateFoodSavedRequest } from './dto/CreateFoodSavedRequest';
+import MODELS from 'constants/model';
 
 export const saveOrRemoveFoodSaved = async (input: CreateFoodSavedRequest, author: ObjectId) => {
   try {
@@ -50,7 +52,15 @@ export const getAllFoodSaved = async (author: ObjectId, urlParams: URLParams) =>
       .limit(pageSize)
       .sort(sortObj)
       .populate('created_by', populateUser())
-      .populate('foods_id');
+      .populate('foods_id')
+      .populate({
+        path: 'foods_id',
+        populate: {
+          path: 'created_by',
+          model: MODELS.user,
+          select: 'username avatar_url',
+        },
+      });
 
     const resolveAll = await Promise.all([count, data]);
 
@@ -61,6 +71,21 @@ export const getAllFoodSaved = async (author: ObjectId, urlParams: URLParams) =>
         pageSize,
         currentPage,
       },
+    };
+  } catch (error) {
+    throw new BadRequestException();
+  }
+};
+
+export const checkSavedFood = async (input: CheckSavedFoodRequest, author: ObjectId) => {
+  try {
+    const foodSaved = await FoodSavedModel.findOne({
+      foods_id: input.foods_id,
+      created_by: author,
+    });
+
+    return {
+      isSaved: !!foodSaved,
     };
   } catch (error) {
     throw new BadRequestException();
